@@ -1,6 +1,5 @@
 function val = exactSoln(x, y, t)
-%EXACTSOLN Summary of this function goes here
-%   Detailed explanation goes here
+%EXACTSOLN This is the exact solution of the equation, used in manufactured solution verification process.
 
 val = exp(t) .* (x - x.^2) .* (y - y.^2);
 

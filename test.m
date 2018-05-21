@@ -63,6 +63,33 @@ end
 
 
 
+%%
+clear; clc
+
+foo = @(x, y) 1 ./ (1 + exp(-10 * (x - 0.5)));
+
+
+[meshX, meshY] = meshgrid(0:1/64:1, 0:1/64:1);
+
+surf(meshX, meshY, test_f(meshX, meshY))
+
+
+%%
+clear; clc
+
+syms x y L
+
+foo = @(x, y) L * (sin(2 * pi * (x + 1/4)) - 1) * (sin(2 * pi * (y + 1/4)) - 1);
+f = @(x, y) 1/2 - 1 / (1 + exp(foo(x, y)));
+
+poisson = diff(f, x, 2) + diff(f, y, 2);
+
+x = 0.1; y = 0.1; L = 10000;
+vpa(subs(poisson))
+
+x = 0.1; y = 0.1; L = 10000;
+syms x y L
+poisson = @(x, y) (4*L^2*pi^2*exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1))*cos(2*pi*(x + 1/4))^2*(sin(2*pi*(y + 1/4)) - 1)^2)/(exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1)) + 1)^2 + (4*L^2*pi^2*exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1))*cos(2*pi*(y + 1/4))^2*(sin(2*pi*(x + 1/4)) - 1)^2)/(exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1)) + 1)^2 - (8*L^2*pi^2*exp(2*L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1))*cos(2*pi*(x + 1/4))^2*(sin(2*pi*(y + 1/4)) - 1)^2)/(exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1)) + 1)^3 - (8*L^2*pi^2*exp(2*L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1))*cos(2*pi*(y + 1/4))^2*(sin(2*pi*(x + 1/4)) - 1)^2)/(exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1)) + 1)^3 - (4*L*pi^2*exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1))*sin(2*pi*(x + 1/4))*(sin(2*pi*(y + 1/4)) - 1))/(exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1)) + 1)^2 - (4*L*pi^2*exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1))*sin(2*pi*(y + 1/4))*(sin(2*pi*(x + 1/4)) - 1))/(exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1)) + 1)^2;
 
 
 
