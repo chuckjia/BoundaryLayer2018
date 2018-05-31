@@ -27,7 +27,7 @@ A = full(gallery('tridiag', n, -1, 4, -1));
 kron(eye(2), A)
 
 
-%% 
+%%
 
 n = 10;
 
@@ -36,7 +36,7 @@ myMat = genDPoisson([n, n]);
 nnz(matlabMat - myMat)
 
 
-%% 
+%%
 
 A = [1, 2, 3; 3, 4, 5]
 padarray(A, [1, 1], 'both')
@@ -90,6 +90,43 @@ vpa(subs(poisson))
 x = 0.1; y = 0.1; L = 10000;
 syms x y L
 poisson = @(x, y) (4*L^2*pi^2*exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1))*cos(2*pi*(x + 1/4))^2*(sin(2*pi*(y + 1/4)) - 1)^2)/(exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1)) + 1)^2 + (4*L^2*pi^2*exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1))*cos(2*pi*(y + 1/4))^2*(sin(2*pi*(x + 1/4)) - 1)^2)/(exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1)) + 1)^2 - (8*L^2*pi^2*exp(2*L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1))*cos(2*pi*(x + 1/4))^2*(sin(2*pi*(y + 1/4)) - 1)^2)/(exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1)) + 1)^3 - (8*L^2*pi^2*exp(2*L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1))*cos(2*pi*(y + 1/4))^2*(sin(2*pi*(x + 1/4)) - 1)^2)/(exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1)) + 1)^3 - (4*L*pi^2*exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1))*sin(2*pi*(x + 1/4))*(sin(2*pi*(y + 1/4)) - 1))/(exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1)) + 1)^2 - (4*L*pi^2*exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1))*sin(2*pi*(y + 1/4))*(sin(2*pi*(x + 1/4)) - 1))/(exp(L*(sin(2*pi*(x + 1/4)) - 1)*(sin(2*pi*(y + 1/4)) - 1)) + 1)^2;
+
+
+%%
+clear; clc
+
+syms t x y epsilon
+u = t .* ((1 - exp(-x ./ epsilon.^0.5) .* cos(x ./ epsilon.^0.5)) .* ...
+    (1 - exp(-(1 - x) ./ epsilon.^0.5) .* cos((1 - x) ./ epsilon.^0.5)) .* ...
+    (1 - exp(-y ./ epsilon.^0.5) .* cos(y ./ epsilon.^0.5)) .* ...
+    (1 - exp(-(1 - y) ./ epsilon.^0.5) .* cos((1 - y) ./ epsilon.^0.5)))
+
+diff(u, t) - epsilon * (diff(u, x, 2) + diff(u, y, 2))
+
+
+
+%% 
+
+syms x y t m n epsilon
+exU = sin(2 .* pi .* m .* t) .* sin(2 .* pi .* n .* (x - x.^2) .* (y - y.^2));
+f = diff(exU, t) - epsilon * (diff(exU, x, 2) + diff(exU, y, 2));
+
+x = 0.51; 
+y = 0.9;
+t = 0.45;
+m = 2;
+n = 2;
+epsilon = 0.01;
+
+vpa(subs(f) - fFcn(x, y, t, epsilon), 10)
+
+
+
+
+
+
+
+
 
 
 

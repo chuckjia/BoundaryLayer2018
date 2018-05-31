@@ -1,22 +1,7 @@
 clear; closeAllImages(); clc
 
-epsilon = 1e-6;
-meshN = 2^5;
+meshN = 2^3;
 
-solvePDE(epsilon, meshN);
+main
 
 if meshN >= 50 playSound("complete"); end
-
-
-
-
-
-
-
-
-
-
-
-
-
-

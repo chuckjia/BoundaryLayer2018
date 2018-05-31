@@ -12,7 +12,6 @@ if prod(gridSize) == length(soln)  % If the mesh provided is of the same size wi
 else
     surf(meshX, meshY, padarray(reshape(soln, gridSize - 2), [1, 1], 'both'));
 end
-shg
 
 end
 
