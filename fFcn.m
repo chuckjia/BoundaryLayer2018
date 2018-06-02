@@ -5,7 +5,7 @@ function val = fFcn(x, y, t, epsilon)
 % Test #1: from exact solution
 % ===== ===== ===== ===== ===== ===== 
 
-% m = 2 .* pi; xterm = x .* (1 - x); yterm = y .* (1 - y); mtx = m .* t .* x; sin_mtx = sin(mtx); cos_mtx = cos(mtx); u_xx = yterm .* (-sin_mtx .* (m.^2 .* t.^2 .* xterm + 2) + 2 .* m .* t .* cos_mtx .* (1 - 2 .* x)); u_yy = -2 .* sin_mtx .* xterm; val = m .* x .* cos_mtx .* xterm .* yterm - epsilon .* (u_xx + u_yy);
+m = 2 .* pi; xterm = x .* (1 - x); yterm = y .* (1 - y); mtx = m .* t .* x; sin_mtx = sin(mtx); cos_mtx = cos(mtx); u_xx = yterm .* (-sin_mtx .* (m.^2 .* t.^2 .* xterm + 2) + 2 .* m .* t .* cos_mtx .* (1 - 2 .* x)); u_yy = -2 .* sin_mtx .* xterm; val = m .* x .* cos_mtx .* xterm .* yterm - epsilon .* (u_xx + u_yy);
 
 
 % ===== ===== ===== ===== ===== ===== 
@@ -19,10 +19,10 @@ function val = fFcn(x, y, t, epsilon)
 % Test #A: from exact solution
 % ===== ===== ===== ===== ===== ===== 
 
-% m = 2;
-% xterm = x .* (1 - x);
-% yterm = y .* (1 - y);
-% val = -m .* sin(m .* t) .* xterm .* yterm + 2 .* epsilon .* cos(m .* t) .* (xterm + yterm);
+m = 2;
+xterm = x .* (1 - x);
+yterm = y .* (1 - y);
+val = -m .* sin(m .* t) .* xterm .* yterm + 2 .* epsilon .* cos(m .* t) .* (xterm + yterm);
 
 
 % ===== ===== ===== ===== ===== ===== 
@@ -64,7 +64,7 @@ function val = fFcn(x, y, t, epsilon)
 % Test #D: Constant f
 % ===== ===== ===== ===== ===== ===== 
 
-val = 1;
+% val = 1;
 
 end
 

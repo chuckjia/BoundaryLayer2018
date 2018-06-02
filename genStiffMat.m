@@ -16,7 +16,7 @@ xGrad = numCellsX / (xRange(2) - xRange(1));
 yGrad = numCellsY / (yRange(2) - yRange(1));
 
 diagElemStiffMat = 4 * cellArea * (xGrad ^ 2 + yGrad ^ 2);
-stiffMat = diagElemStiffMat .* eye(numGrids);
+stiffMat = diagElemStiffMat .* spdiags(ones(numGrids), 0, numGrids, numGrids);
 
 adjacentElementX = -2 * cellArea * xGrad ^ 2;
 adjacentElementY = -2 * cellArea * yGrad ^ 2;

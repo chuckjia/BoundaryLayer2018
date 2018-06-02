@@ -105,13 +105,13 @@ diff(u, t) - epsilon * (diff(u, x, 2) + diff(u, y, 2))
 
 
 
-%% 
+%%
 
 syms x y t m n epsilon
 exU = sin(2 .* pi .* m .* t) .* sin(2 .* pi .* n .* (x - x.^2) .* (y - y.^2));
 f = diff(exU, t) - epsilon * (diff(exU, x, 2) + diff(exU, y, 2));
 
-x = 0.51; 
+x = 0.51;
 y = 0.9;
 t = 0.45;
 m = 2;
@@ -119,6 +119,51 @@ n = 2;
 epsilon = 0.01;
 
 vpa(subs(f) - fFcn(x, y, t, epsilon), 10)
+
+
+
+%%
+
+a = 0;
+b = class(a);
+fprintf();
+
+
+%%
+clear; clc
+
+B = repmat(-1, 100, 1)
+B = [1;2;3;4]
+full(spdiags(B, -2, 4, 4))
+
+
+%%
+
+p = profile('info')
+p.FunctionTable
+
+
+
+%%
+clear; clc
+n = 20000;
+tic
+for i = 1:n
+    %a = speye(i);
+    a = spdiags(ones(i, 1), 0, i, i);
+end
+toc
+
+
+
+
+
+
+
+
+
+
+
 
 
 

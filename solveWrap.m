@@ -1,15 +1,13 @@
-function relativeError = solvePDE(epsilon, meshN)
-%SOLVEPDE Wrapper of our PDE solver
-%   Uncomment meshN and epsilon and this function can be run as a script.
-
-% clear; closeAllImages(); clc
+function soln = solveWrap(epsilon, meshN, useGPU)
+%solveWrap Wrapper of our PDE solver
 
 % ===== ===== ===== ===== ===== ===== ===== =====
 % Heat Equation Solver
 % ===== ===== ===== ===== ===== ===== ===== =====
 
-% meshN = 2^4;
-% epsilon = 0.01;
+graphPeriod = 0;
+makeMovie = false;
+zRangeInPlot = false;
 
 % Setting parameters
 xRange = [0, 1];
@@ -18,15 +16,13 @@ yRange = [0, 1];
 meshSize = [meshN, meshN];  % [numCellsX, numCellsY]
 stepSize = calcStepSize(xRange, yRange, meshSize);
 
-
 Dt = 0.01;
 numTimeStep = 100;
-graphPeriod = 1;
-makeMovie = true;
 
 % Solve the heat equation
 tic
-[soln, Mv] = solveHeatEq(xRange, yRange, meshSize, stepSize, epsilon, Dt, numTimeStep, graphPeriod, makeMovie);
+[soln, Mv] = solveHeatEq(xRange, yRange, meshSize, stepSize, epsilon, Dt, numTimeStep, graphPeriod, ...
+    makeMovie, zRangeInPlot, useGPU);
 toc
 
 if makeMovie
@@ -55,7 +51,7 @@ end
 % title({'Numerical Error', ''})
 % xlabel('x-axis'); ylabel('y-axis'); zlabel('Numerical Error')
 % 
-% clc; toc
+% 
 % relativeError = norm(numErrorMat) / norm(exactSolnMat);
 % fprintf("Relative error = %1.6e\n", relativeError);
 

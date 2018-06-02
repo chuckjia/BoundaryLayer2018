@@ -1,11 +1,13 @@
 clear; closeAllImages(); clc
 
 epsilon = 1e-6;
-meshN = 2^5;
+meshN = 2^6;
+useGPU = true;  % Use GPU when available
 
-solvePDE(epsilon, meshN);
+profile on
+solveWrap(epsilon, meshN, useGPU); 
 
-if meshN >= 50 playSound("complete"); end
+% if meshN >= 50 playSound("complete"); end
 
 
 

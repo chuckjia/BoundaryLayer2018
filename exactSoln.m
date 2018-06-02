@@ -19,8 +19,7 @@ function val = exactSoln(x, y, t, epsilon)
 % Test #A
 % ===== ===== ===== ===== ===== ===== 
 
-% m = 2;
-% val = cos(m .* t) .* (x - x.^2) .* (y - y.^2);
+m = 2; val = cos(m .* t) .* (x - x.^2) .* (y - y.^2);
 
 
 % ===== ===== ===== ===== ===== ===== 
@@ -44,7 +43,7 @@ function val = exactSoln(x, y, t, epsilon)
 % Test #D: Constant Solution
 % ===== ===== ===== ===== ===== ===== 
 
-val = 0 .* x;
+% val = 0 .* x;
 
 end
 

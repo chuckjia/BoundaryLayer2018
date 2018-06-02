@@ -4,13 +4,17 @@ function coefMat = genTimeStepCoefMat(meshSize, epsilon, Dt, stepSize)
 
 M = meshSize(1) - 1;  % iMax
 N = meshSize(2) - 1;  % jMax
+MN = M * N;
 
-D = full(gallery('tridiag', N, -1, 4, -1));  % Block Poisson matrix
-DPoisson = kron(eye(M), D);  % Tridiagonal block matrix
-DPoisson = DPoisson + diag(repmat(-1, M * N - N, 1), N) + diag(repmat(-1, M * N - N, 1), -N);
+D = gallery('tridiag', N, -1, 4, -1);  % Block Poisson matrix
+DPoisson = kron(spdiags(ones(M, 1), 0, M, M), D);  % Tridiagonal block matrix; note that speye does not support gpuArray
+offDiagArr = repmat(-1, MN, 1);
+DPoisson = DPoisson + spdiags(offDiagArr, N, MN, MN) + spdiags(offDiagArr, -N, MN, MN);
 DPoisson = -DPoisson;
 
-coefMat = eye(prod(meshSize - 1)) - (epsilon * Dt / stepSize ^ 2) .* DPoisson;
+coefMat = spdiags(ones(MN, 1), 0, MN, MN) - (epsilon * Dt / stepSize ^ 2) .* DPoisson;  % note that speye does not support gpuArray
+
+class(coefMat)
 
 end
 
