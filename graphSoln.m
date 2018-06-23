@@ -1,4 +1,4 @@
-function graphSoln(meshX, meshY, soln)
+function s = graphSoln(meshX, meshY, soln)
 %GRAPHSOLN Graph the solution as a surface in the 3D space
 %   Offers 2 options: 1. The mesh provided is of the same size with the solution vector, i.e. without boundary cells
 %                     2. The mesh provided includes the boundary cells. In this case, the solution will be padded
@@ -8,9 +8,9 @@ function graphSoln(meshX, meshY, soln)
 gridSize = size(meshX);
 
 if prod(gridSize) == length(soln)  % If the mesh provided is of the same size with the solution vector, i.e. without boundary cells
-    surf(meshX, meshY, reshape(soln, gridSize));
+    s = surf(meshX, meshY, reshape(soln, gridSize));
 else
-    surf(meshX, meshY, padarray(reshape(soln, gridSize - 2), [1, 1], 'both'));
+    s = surf(meshX, meshY, padarray(reshape(soln, gridSize - 2), [1, 1], 'both'));
 end
 
 end

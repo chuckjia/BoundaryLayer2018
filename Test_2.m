@@ -1,7 +1,13 @@
-clear; closeAllImages(); clc
+clear; clc
+epsilon = 0.1;
+rRange = [0, 1];
+tRange = [0, 1];
+meshSize = [2^6, 2^6];
 
-meshN = 2^3;
 
-main
+Phi = @(r, t, epsilon) 1 ./ sqrt(4 * pi * epsilon .* t) .* exp(-r.^2 ./ (4 * epsilon .* t));
 
-if meshN >= 50 playSound("complete"); end
+[rMesh, tMesh] = genMesh(rRange, tRange, meshSize);
+surf(rMesh, tMesh, Phi(rMesh, tMesh, epsilon))
+
+

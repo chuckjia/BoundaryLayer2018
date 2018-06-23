@@ -1,10 +1,11 @@
-function m2(meshN, useGPU)
+function m2(epsilon, meshN, performEval)
 %M2 Summary of this function goes here
 %   Detailed explanation goes here
 
-epsilon = 1e-6;
+clc
 
-solvePDE_wrap(epsilon, meshN, useGPU); 
+progPeriod = 10;
+solveWrap(epsilon, meshN, progPeriod, performEval);
 
 end
 

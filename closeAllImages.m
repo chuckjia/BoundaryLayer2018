@@ -1,6 +1,5 @@
 function closeAllImages()
-%CLOSEALLIMAGES Summary of this function goes here
-%   Detailed explanation goes here
+%CLOSEALLIMAGES Close all image figures currently open
 
 close all;
 fprintf("All images closed.\n");

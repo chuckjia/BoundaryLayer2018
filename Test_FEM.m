@@ -3,24 +3,24 @@ clear; clc
 % Equations
 xRange = [0, 1];
 yRange = [0, 1];
-% % Test 1
-% exactU = @(x, y) (x - x.^2) .* (y - y.^2);
-% f = @(x, y) 2 .* (x - x.^2 + y - y.^2);
+% Test 1
+exactU = @(x, y) (x - x.^2) .* (y - y.^2);
+f = @(x, y) 2 .* (x - x.^2 + y - y.^2);
 % % Test 2
 % exactU = @(x, y) exp(x .* (1 - x) .* y .* (1 - y)) - 1;
 % f = @(x, y) -exp((x - x.^2) .* (y - y.^2)) .* (...
 %     (y - y.^ 2) .* (-2 + (y - y.^2) .* (1 - 2 .* x).^2) + (x - x.^2) .* (-2 + (x - x.^2) .* (1 - 2 .* y).^2) ...
 %     );
 % Test 3
-m = 2;
-exactU = @(x, y) sin(2 .* pi .* m .* (x - x.^2) .* (y - y.^2));
-f = @(x, y) sin(2 * pi * m * (x - x.^2) .* (y - y.^2)) .* (2 .* pi .* m).^2 .* ( ...
-    ((y - y.^2) .* (1 - 2 .* x)).^2 + ((x - x.^2) .* (1 - 2.* y)).^2 ...
-) + 2 .* cos(2 * pi * m * (x - x.^2) .* (y - y.^2)) .* 2 .* pi .* m .* (x - x.^2 + y - y.^2);
+% m = 2;
+% exactU = @(x, y) sin(2 .* pi .* m .* (x - x.^2) .* (y - y.^2));
+% f = @(x, y) sin(2 * pi * m * (x - x.^2) .* (y - y.^2)) .* (2 .* pi .* m).^2 .* ( ...
+%     ((y - y.^2) .* (1 - 2 .* x)).^2 + ((x - x.^2) .* (1 - 2.* y)).^2 ...
+% ) + 2 .* cos(2 * pi * m * (x - x.^2) .* (y - y.^2)) .* 2 .* pi .* m .* (x - x.^2 + y - y.^2);
 
 
 % Numerical settings
-meshN = 2^5;
+meshN = 2^6;
 meshSize = [meshN, meshN];  % [numCellsX, numCellsY]
 
 % Generate mesh

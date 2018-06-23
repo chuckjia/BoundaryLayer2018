@@ -157,23 +157,123 @@ toc
 
 
 
+%%
+clear; clc
+
+n = 10000;
+progPeriod = 10;
+
+tic
+for i = 1:n
+    showProg(i, n, progPeriod);
+end
+toc
+
+
+%%
+clc
+xRange = [0, 1];
+yRange = [0, 1];
+meshSize = [2^7, 2^7];
+
+tic
+genStiffMat(xRange, yRange, meshSize);
+toc
+
+
+
+%%
+clc
+xRange = [0, 1];
+yRange = [0, 1];
+meshSize = [2^7, 2^7];
+t = 1;
+epsilon = 0.01;
+
+% previewExactSoln(xRange, yRange, meshSize, t, epsilon);
+previewF(xRange, yRange, meshSize, t, epsilon);
+
+
+
+%%
+
+t = 1;
+epsilon = 1e-3;
+xRange = [0, 1];
+yRange = [0, 1];
+meshSize = [2^7, 2^7];
+[meshX, meshY] = genMesh(xRange, yRange, meshSize);
+s = surf(meshX, meshY, exactSoln(meshX, meshY, t, epsilon))
+saveas(s, "2.fig");
+
+
+%%
+
+
+t = 1;
+epsilon = 1e-3;
+xRange = [-1, 1];
+yRange = [-1, 1];
+meshSize = [2^7, 2^7];
+[meshX, meshY] = genMesh(xRange, yRange, meshSize);
+s = surf(meshX, meshY, exactSoln(meshX, meshY, t, epsilon));
+% saveas(s, "2.fig");
+
+
+
+%%
+
+clear; clc
+
+t = 1;
+epsilon = 1e-5;
+xRange = [0, 1];
+meshSize = 150;
+
+stepSize = (xRange(2) - xRange(1)) / meshSize;
+meshX = xRange(1):stepSize:xRange(2);
+s = plot(meshX, myfun(meshX, t, epsilon));
+
+
+% function val = myfun(x, t, epsilon)
+% val = t .* (1 - exp(-x ./ epsilon.^0.5) .* cos(x ./ epsilon.^0.5)) .* ...
+%     (1 - exp(-(1 - x) ./ epsilon.^0.5) .* cos((1 - x) ./ epsilon.^0.5));
+% end
 
 
 
 
 
+%%
+
+% Setting parameters
+xRange = [0, 1];
+yRange = [0, 1];
+meshN = 2^6;
+meshSize = [meshN, meshN];  % [numCellsX, numCellsY]
+epsilon = 1e-6;
+
+[meshX, meshY] = genMesh(xRange, yRange, meshSize);
+[finElemX, finElemY] = genFinElem(xRange, yRange, meshSize);
+
+Dt = 0.01;
+numTimeStep = 100;
+
+steps = numTimeStep;
+graphPeriod = numTimeStep;
+graphExactSoln(steps, Dt, meshX, meshY, finElemX, finElemY, epsilon, graphPeriod);
 
 
 
+%%
+
+plot(1:0.5:2, 1:0.5:2)
 
 
 
+%%
 
-
-
-
-
-
+meshX = meshgrid(1:0.2:2, 1:0.2:2)
 
 
 

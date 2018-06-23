@@ -15,24 +15,81 @@ cellArea = calcCellArea(xRange, yRange, meshSize);
 xGrad = numCellsX / (xRange(2) - xRange(1));
 yGrad = numCellsY / (yRange(2) - yRange(1));
 
-diagElemStiffMat = 4 * cellArea * (xGrad ^ 2 + yGrad ^ 2);
-stiffMat = diagElemStiffMat .* spdiags(ones(numGrids), 0, numGrids, numGrids);
+diagElem = 4 * cellArea * (xGrad ^ 2 + yGrad ^ 2);  % Diagonal element of the stiffness matrix
+adjacentElemX = -2 * cellArea * xGrad ^ 2;  % Matrix entry storing inner product (u, v) where u and v are two x-direction adjacent finite elements
+adjacentElemY = -2 * cellArea * yGrad ^ 2;  % Matrix entry storing inner product (u, v) where u and v are two y-direction adjacent finite elements
 
-adjacentElementX = -2 * cellArea * xGrad ^ 2;
-adjacentElementY = -2 * cellArea * yGrad ^ 2;
-for j = 1:numGridsY
-    for i = 1:numGridsX
+% % Old method, with no pre-allocation
+% stiffMat = diagElemStiffMat .* speye(numGrids);
+% for i = 1:numGridsX
+%     for j = 1:numGridsY
+%         index = (i - 1) * numGridsY + j;
+%         if i ~= numGridsX
+%             stiffMat(index, index + numGridsY) = adjacentElemX;  % Grid on the right
+%             stiffMat(index + numGridsY, index) = adjacentElemX;
+%         end
+%         if j ~= numGridsY
+%             stiffMat(index, index + 1) = adjacentElemY;  % Grid above
+%             stiffMat(index + 1, index) = adjacentElemY;
+%         end
+%     end
+% end
+
+% Calculate before hand the total number of non-zero elements for preallocation
+numNonZeroElemStiffMat = ...  % The term "boundary" used below does not mean the boundary of the domain, but rather the outside layer of the non-bounday elements
+    numGrids + ...  % Number of diagonal elements, all non-zero
+    (numGridsX - 2) * (numGridsY - 2) * 4 + ...  % Number of non-boundary finite elements, each one contributes to 4 non-zero stiffness matrix elements, corresponding to 4 neighbors
+    2 * (numGridsX - 2) * 3 + 2 * (numGridsY - 2) * 3 + ...  % Number of boundary finite elements, each one contributes to 3 non-zero stiffness matrix elements
+    4 * 2;  % Four courners
+
+% Calculate all non-zero matrix elements and store them in vectors. In the end, a sparse stiff matrix will be
+% assembled using these vectors
+rowIndexVec = zeros(numNonZeroElemStiffMat, 1);  % Stores the row indices
+colIndexVec = zeros(numNonZeroElemStiffMat, 1);  % Stores the col indices
+nonZeroElemVec = zeros(numNonZeroElemStiffMat, 1);  % Stores the non-zero elements in the matrix
+
+entryNo = 0;
+for i = 1:numGridsX
+    for j = 1:numGridsY
         index = (i - 1) * numGridsY + j;
         if i ~= numGridsX
-            stiffMat(index, index + numGridsY) = adjacentElementX;  % Grid on the right
-            stiffMat(index + numGridsY, index) = adjacentElementX;
+            % stiffMat(index, index + numGridsY) = adjacentElemX;  % Grid on the right
+            % stiffMat(index + numGridsY, index) = adjacentElemX;
+            
+            entryNo = entryNo + 1;
+            rowIndexVec(entryNo) = index;
+            colIndexVec(entryNo) = index + numGridsY;
+            nonZeroElemVec(entryNo) = adjacentElemX;
+            
+            entryNo = entryNo + 1;
+            rowIndexVec(entryNo) = index + numGridsY;
+            colIndexVec(entryNo) = index;
+            nonZeroElemVec(entryNo) = adjacentElemX;
         end
         if j ~= numGridsY
-            stiffMat(index, index + 1) = adjacentElementY;  % Grid above
-            stiffMat(index + 1, index) = adjacentElementY;
+            % stiffMat(index, index + 1) = adjacentElemY;  % Grid above
+            % stiffMat(index + 1, index) = adjacentElemY;
+            
+            entryNo = entryNo + 1;
+            rowIndexVec(entryNo) = index;
+            colIndexVec(entryNo) = index + 1;
+            nonZeroElemVec(entryNo) = adjacentElemY;
+            
+            entryNo = entryNo + 1;
+            rowIndexVec(entryNo) = index + 1;
+            colIndexVec(entryNo) = index;
+            nonZeroElemVec(entryNo) = adjacentElemY;
         end
+        
+        % Diagonal elements
+        entryNo = entryNo + 1;
+        rowIndexVec(entryNo) = index;
+        colIndexVec(entryNo) = index;
+        nonZeroElemVec(entryNo) = diagElem;
     end
 end
+
+stiffMat = sparse(rowIndexVec, colIndexVec, nonZeroElemVec);
 
 end
 

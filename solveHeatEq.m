@@ -1,5 +1,6 @@
-function [soln, Movie] = solveHeatEq(xRange, yRange, meshSize, stepSize, epsilon, Dt, numTimeStep, graphPeriod, ...
-    makeMovie, zRangeInPlot, useGPU) 
+function [soln, Movie] = solveHeatEq(xRange, yRange, meshSize, epsilon, Dt, numTimeStep, ...
+    graphPeriod, makeMovie, zRangeInPlot, progPeriod, saveImgToFile, graphBoundary)
+
 %SOLVEHEATEQ This function solves the heat equation using FEM in space and backwards Euler on time
 %   Input:: graphPeriod (input #8): Period of graphing. Values should be integers. Some special values are used:
 %                           1. Its default value is the number of time steps, in which case graph will only be
@@ -11,12 +12,12 @@ function [soln, Movie] = solveHeatEq(xRange, yRange, meshSize, stepSize, epsilon
 % Parsing parameters
 % ===== ===== ===== ===== ===== ===== ===== =====
 
-if nargin < 7
+if nargin < 6
     error("Not enough input!\n")
 end
 
-% Graph period settings: graphPeriod, input #8
-if nargin < 8
+% Graph period settings: graphPeriod, input #7
+if nargin < 7
     graphPeriod = numTimeStep;  % Graph only at the end of computation
 end
 if graphPeriod == -1
@@ -25,75 +26,71 @@ elseif graphPeriod == 0
     graphPeriod = 1e50;  % Do not graph
 end
 
-% If make a movie: makeMovie, input #9
-if nargin < 9
+% If make a movie: makeMovie, input #8, default = false
+if nargin < 8
     makeMovie = false;
 end
 
-% If set z range: 
-if nargin < 10
+% If set z range, input #9, default = false
+if nargin < 9
     zRangeInPlot = false;
 end
 setZRange = length(zRangeInPlot) == 2;
 
-% If choose to use GPU: useGPU, input #11
-if nargin < 11
-    useGPU = false;
+if nargin < 10
+    progPeriod = 5;
 end
-useGPU = useGPU && gpuDeviceCount;  % Make sure GPU is available
+
+if nargin < 11
+    saveImgToFile = false;
+end
+
+if nargin < 12
+    graphBoundary = true;
+end
 
 
 % ===== ===== ===== ===== ===== ===== ===== =====
 % Initial Conditions
 % ===== ===== ===== ===== ===== ===== ===== =====
 
+fprintf('[1] Initializing matrices\n');
+
+tic
 [meshX, meshY] = genMesh(xRange, yRange, meshSize);
 [finElemX, finElemY] = genFinElem(xRange, yRange, meshSize);
 soln = reshape(u0Fcn(finElemX, finElemY, epsilon), [], 1);  % Do not assume initial condition to be sparse
+fprintf("- Mesh and solution initiation completed.\n");
+toc
 % graphSoln(meshX, meshY, soln);
 
 % Time step matrices
+tic
+stepSize = calcStepSize(xRange, yRange, meshSize);
 timeStepCoefMat = genTimeStepCoefMat(meshSize, epsilon, Dt, stepSize);
+fprintf("- Initiation of timeStepCoefMat completed.\n");
+toc
 
 % FEM matrices
+tic
 cellArea = calcCellArea(xRange, yRange, meshSize);
 stiffMat = genStiffMat(xRange, yRange, meshSize);
-
-% Set up GPU arrays
-if useGPU
-    xRange = gpuArray(xRange);  % Input #1
-    yRange = gpuArray(yRange);  % Input #2
-    meshSize = gpuArray(meshSize);  % Input #3
-    stepSize = gpuArray(stepSize);  % Input #4
-    epsilon = gpuArray(epsilon);  % Input #5
-    Dt = gpuArray(Dt);  % Input #6
-    numTimeStep = gpuArray(numTimeStep);  % Input #7
-    graphPeriod = gpuArray(graphPeriod);  % Input #8
-    makeMovie = gpuArray(makeMovie);   % Input #9
-    zRangeInPlot = gpuArray(zRangeInPlot);  % Input #10
-    useGPU = gpuArray(useGPU);  % Input #11
-
-    meshX = gpuArray(meshX);
-    meshY = gpuArray(meshY);
-    finElemX = gpuArray(finElemX);
-    finElemY = gpuArray(finElemY);
-    soln = gpuArray(soln);
-    timeStepCoefMat = gpuArray(timeStepCoefMat);
-    cellArea = gpuArray(cellArea);
-    stiffMat = gpuArray(stiffMat);
-end
+fprintf("- Initiation of stiff matrix completed.\n");
+toc
 
 
 % ===== ===== ===== ===== ===== ===== ===== =====
 % Time Steps and FEM
 % ===== ===== ===== ===== ===== ===== ===== =====
 
+fprintf('\n[2] Computation starts\n');
+
 frameNo = 1;
 
 for stepNo = 1:numTimeStep
     
     % Step updates and informational
-    showProg(stepNo, numTimeStep)
+    showProg(stepNo, numTimeStep, progPeriod)
     t = Dt * stepNo;
     solnPrev = soln;
     f_vec = reshape(fFcn(finElemX, finElemY, t, epsilon), [], 1);
@@ -107,14 +104,26 @@ for stepNo = 1:numTimeStep
     
     % Generate graphs
     if ~mod(stepNo, graphPeriod)
-        if ~makeMovie 
-            figure; 
+        if ~makeMovie
+            figure;
         end
-        graphSoln(meshX, meshY, soln);
+        
+        if graphBoundary
+            s = graphSoln(meshX, meshY, soln);
+        else
+            s = graphSoln(finElemX, finElemY, soln);
+        end
         title({'Numerical Solution', strcat('t = ', num2str(stepNo * Dt), 's'), ''});
         xlabel('x-axis'); ylabel('y-axis'); zlabel('u-axis');
-        if setZRange 
-            zlim(zRangeInPlot); 
+        
+        if saveImgToFile
+            filename = "Output/soln_at_step_" + int2str(stepNo) + ".fig";
+            saveas(s, filename);
+            fprintf("Image file printed: %s\n", filename);
+        end
+        
+        if setZRange
+            zlim(zRangeInPlot);
         end
         if makeMovie
             Movie(frameNo) = getframe(gcf);
@@ -123,6 +132,8 @@ for stepNo = 1:numTimeStep
     end
     
 end
+
+fprintf('Computation completed.\n');
 
 if ~makeMovie
     Movie = false;
