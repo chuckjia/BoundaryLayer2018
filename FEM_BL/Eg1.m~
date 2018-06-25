@@ -26,20 +26,25 @@ Dt = t / n;
 tic
 soln = zeros(size(meshX));
 
-for i = 1:Nx+1
-    fprintf("Progress: %1.2f%%\n", i / (Nx + 1) * 100);
-    for j = 1:Ny+1
-        x = meshX(i, j);
-        y = meshY(i, j);
-        soln(i, j) = 0;
-        for s = Dt:Dt:t
-            phiPart = Phi_rDer(x, t - s, epsilon);
-            regularSolnPart = regularSoln(0, y, s, epsilon);
-            soln(i, j) = soln(i, j) + phiPart * regularSolnPart;
-        end
-    end
-end
-toc
+% for i = 1:Nx+1
+%     fprintf("Progress: %1.2f%%\n", i / (Nx + 1) * 100);
+%     for j = 1:Ny+1
+%         x = meshX(i, j);
+%         soln(i, j) = sum(Phi_rDer(x, t - (Dt:Dt:t), epsilon));
+%     end
+% end
 
+for j = 1:Nx+1
+    x = meshX(1, j);
+    soln(:, j) = sum(Phi_rDer(x, t - (Dt:Dt:t), epsilon));
+end
+
+toc
 surf(meshX, meshY, soln);
+
+
+
+
+%% This section graphs the boundary layer element and th
+
 
