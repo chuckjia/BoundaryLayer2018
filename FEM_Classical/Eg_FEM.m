@@ -42,18 +42,22 @@ toc
 % Generate graph of numerical solutions
 graphSoln(meshX, meshY, soln);
 title('Numerical Solution')
+xlabel('x-axis'); ylabel('y-axis'); zlabel('u-axis')
 
 % Generate graph of EXACT solutions
 exactSoln = reshape(exactU(finElemX, finElemY), [], 1);
 figure
 surf(meshX, meshY, exactU(meshX, meshY));
 title('Exact Solution')
+xlabel('x-axis'); ylabel('y-axis'); zlabel('u-axis')
 
 % Generate graph of numerical ERROR
 numerError = soln - exactSoln;
 figure
 graphSoln(finElemX, finElemY, numerError);
 title('Numerical Error')
+xlabel('x-axis'); ylabel('y-axis'); zlabel('Numerical Error')
+
 
 % Relative error
 fprintf("Mesh size = %dx%d\nRelative error = %d\n", meshSize, norm(numerError) / norm(exactSoln));

@@ -40,11 +40,24 @@ toc
 
 
 
+%%
 
+epsilon = 1e-6;
+meshN = 2^5;
 
+% Setting parameters
+xRange = [0, 1];
+yRange = [0, 1];
 
+meshSize = [meshN, meshN];  % [numCellsX, numCellsY]
 
+Dt = 0.01;
+numTimeStep = 100;
 
+[meshX, meshY] = genMesh(xRange, yRange, meshSize);
+[finElemX, finElemY] = genFinElem(xRange, yRange, meshSize);
+
+surf(fFcn(finElemX, finElemY, 1, 1e-4));
 
 
 
