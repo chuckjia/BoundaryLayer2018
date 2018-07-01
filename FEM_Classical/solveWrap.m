@@ -5,7 +5,7 @@ function soln = solveWrap(epsilon, meshN, progPeriod, performEval)
 % Heat Equation Solver
 % ===== ===== ===== ===== ===== ===== ===== =====
 
-graphPeriod = -1;
+graphPeriod = 0;
 makeMovie = false;
 zRangeInPlot = false;
 saveImgToFile = true;
@@ -18,7 +18,7 @@ yRange = [0, 1];
 meshSize = [meshN, meshN];  % [numCellsX, numCellsY]
 
 Dt = 0.01;
-numTimeStep = 1000;
+numTimeStep = 100;
 
 % Solve the heat equation
 tic

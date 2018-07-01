@@ -1,9 +1,9 @@
 clear; closeAllImages(); clc
 
-epsilon = 1e-6;
-meshN = 2^7;
-progPeriod = 20;
-performEval = true;
+epsilon = 1e-4;
+meshN = 2^5;
+progPeriod = 10;
+performEval = false;
 
 % profile on
 soln = solveWrap(epsilon, meshN, progPeriod, performEval);
@@ -11,17 +11,15 @@ soln = solveWrap(epsilon, meshN, progPeriod, performEval);
 % p = profile('info');
 % profCurr = p.FunctionTable;
 
-
 % graphEndPts = true;
 % % Numerical solution slices
 % sliceAtX = true;
-% level = 0.5;
+% level = 1e-9;
 % graphSolnSlice(soln, sliceAtX, level, graphEndPts);
 % 
 % sliceAtX = false;
-% level = 0.5;
+% level = 1e-9;
 % graphSolnSlice(soln, sliceAtX, level, graphEndPts);
-
 
 
 

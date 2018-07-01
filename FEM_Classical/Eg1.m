@@ -43,7 +43,12 @@ toc
 surf(meshX, meshY, soln);
 
 
+%%
 
+clear; clc
+
+a = [0:0.2:1]
+[x, y] = meshgrid(a, a)
 
 
 

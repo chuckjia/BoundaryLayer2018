@@ -20,7 +20,7 @@ f = @(x, y) 2 .* (x - x.^2 + y - y.^2);
 
 
 % Numerical settings
-meshN = 2^6;
+meshN = 2^5;
 meshSize = [meshN, meshN];  % [numCellsX, numCellsY]
 
 % Generate mesh

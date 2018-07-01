@@ -53,9 +53,9 @@ clear; clc; tic
 % Common variables
 % ===== ===== ===== ===== ===== =====
 
-t = 20;
+t = 0.5;
 
-Dx = 1e-5;
+Dx = 1e-4;
 xVec = Dx:Dx:0.1;
 epsilon = 1e-4;
 
@@ -65,6 +65,7 @@ figure('units', 'inch', 'position', [6,5,5,4])  % [x y width height]
 % Graph approx element
 % ===== ===== ===== ===== ===== =====
 
+fprintf("Graphing...\n");
 plot(xVec, 2 * epsilon * Phi_rDer(xVec, t, epsilon), 'MarkerEdgeColor', 'b');
 % plot(xVec, thetaApprox(xVec, t, epsilon), 'MarkerEdgeColor', 'b');
 
@@ -74,7 +75,7 @@ hold on
 % Graph real BL element
 % ===== ===== ===== ===== ===== =====
 
-integN = 1e6;
+integN = 1e5;
 Dt = t / integN;
 
 xVecLen = length(xVec);
