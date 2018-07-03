@@ -5,7 +5,7 @@ function soln = solveWrap(epsilon, meshN, progPeriod, performEval)
 % Heat Equation Solver
 % ===== ===== ===== ===== ===== ===== ===== =====
 
-graphPeriod = 0;
+graphPeriod = -1;
 makeMovie = false;
 zRangeInPlot = false;
 saveImgToFile = true;

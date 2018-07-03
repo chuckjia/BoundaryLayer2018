@@ -11,7 +11,8 @@ solnLen = length(soln) ^ 0.5;
 soln = reshape(soln, [solnLen, solnLen]);
 
 % Slice solution at level. Max makes sure the index is not 0
-levelIndex = max(floor(solnLen * level), 1);
+levelIndex = ceil(solnLen * level);
+fprintf("level = %f, levelIndex = %d\n", level, levelIndex);
 
 if direction == "x direction"
     if includeEndPts

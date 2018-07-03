@@ -1,5 +1,5 @@
 %% This is an example of the boundary layer element theta^0
-% Summary of example objective
+% These are examples of the boundary layer calculations and graphings
 
 %% This section graphs \bar{theta}_1^0
 % Description of first code block
@@ -142,6 +142,22 @@ plot(xVec, phiVec)
 hold off
 
 toc
+
+%%
+
+clear;clc;tic
+
+xVec = 0:0.01:1;
+t = 1;
+epsilon = 1e-4;
+x = 0.5
+Phi_rDer(x, t, epsilon)
+plot(xVec, Phi_rDer(xVec, t, epsilon))
+
+
+
+
+%%
 
 
 function val = phi_0(xi, t, epsilon)

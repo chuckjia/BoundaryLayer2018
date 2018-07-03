@@ -6,12 +6,12 @@
 clear; closeAllImages(); clc
 
 epsilon = 1e-4;
-progPeriod = 10;
+progPeriod = 5;
 
 includeEndPts = true;
 
 % Coarse mesh
-meshN_vec = [2^4, 2^5];
+meshN_vec = [2^5, 2^9];
 solveAndgraphSlices(epsilon, meshN_vec, progPeriod, includeEndPts)
 
 
