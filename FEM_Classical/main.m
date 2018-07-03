@@ -1,7 +1,7 @@
 clear; closeAllImages(); clc
 
 epsilon = 1e-4;
-meshN = 2^5;
+meshN = 2^8;
 progPeriod = 10;
 performEval = false;
 
