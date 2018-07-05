@@ -49,7 +49,6 @@ if nargin < 12
     graphBoundary = true;
 end
 
-integN = 100;
 
 % ===== ===== ===== ===== ===== ===== ===== =====
 % Initial Conditions
@@ -75,12 +74,22 @@ toc
 % FEM matrices
 tic
 cellArea = calcCellArea(xRange, yRange, meshSize);
-[stiff_rowInd, stiff_colInd, stiff_elem] = genStiffMat_Const(xRange, yRange, meshSize);
+stiffMat = genStiffMat(xRange, yRange, meshSize);
 fprintf("- Initiation of stiff matrix completed.\n");
 toc
 
-numGridX = meshSize(1) - 1;
-numGridY = meshSize(2) - 1;
+
+% ===== ===== ===== ===== ===== ===== ===== =====
+% Pre-calculation
+% ===== ===== ===== ===== ===== ===== ===== =====
+
+meshSize_finElem = meshSize - 1;
+Dx = (xRange(2) - xRange(1)) / meshSize(1);
+Dy = (yRange(2) - yRange(1)) / meshSize(2);
+prismVol = Dx * Dy;
+
+meshX_1D = (xRange(1) + Dx):Dx:(xRange(2) - Dx);
+meshY_1D = (yRange(1) + Dy):Dy:(yRange(2) - Dy);
 
 
 % ===== ===== ===== ===== ===== ===== ===== =====
@@ -93,13 +102,17 @@ frameNo = 1;
 
 for stepNo = 1:numTimeStep
     
+    % ----- ----- ----- ----- ----- ----- 
     % Step updates and informational
+    % ----- ----- ----- ----- ----- ----- 
     showProg(stepNo, numTimeStep, progPeriod)
     t = Dt * stepNo;
     solnPrev = soln;
     f_vec = reshape(fFcn(finElemX, finElemY, t, epsilon), [], 1);
     
+    % ----- ----- ----- ----- ----- ----- 
     % Backwards Euler
+    % ----- ----- ----- ----- ----- ----- 
     soln = timeStepCoefMat \ (soln + Dt * f_vec);
     
     
@@ -108,32 +121,38 @@ for stepNo = 1:numTimeStep
     
     
     
+    
+    
+    
+    
+    
+    % ----- ----- ----- ----- ----- ----- 
     % FEM
-    integ_Dt = t / integN;
-    integ_tVec = t - (integ_Dt:integ_Dt:t);
-    BL1 = zeros(numGridX, 1);
-    BL3 = zeros(numGridX, 1);
-    for k = 1:numGridX
-        x = finElemX(1, k);
-        BL1(k) = sum(Phi_rDer(x, integ_tVec, epsilon));
-        BL3(k) = -sum(Phi_rDer(xRange(2) - x, integ_tVec, epsilon));
+    % ----- ----- ----- ----- ----- ----- 
+    
+    forcing_FEM = f_vec - (soln - solnPrev) ./ (Dt * epsilon);
+    RHS_FEM_reg = (2 * cellArea) .* forcing_FEM;
+    
+    numBLE_Y = meshSize(2) - 1;
+    numBLE_X = meshSize(1) - 1;
+    forcing_FEM = reshape(forcing_FEM, meshSize_finElem);
+    
+    % BLE: theta 1
+    RHS_FEM_theta1 = zeros(numBLE_Y, 1);
+    PsiVec = PsiFcn(meshX_1D, t, epsilon);
+    for thetaNo = 1:numBLE_Y
+        RHS_FEM_theta1(thetaNo) = sum(PsiVec .* forcing_FEM(thetaNo,:)) .* prismVol;
     end
     
-    BL2 = zeros(numGridY, 1);
-    BL4 = zeros(numGridY, 1);
-    for k = 1:numGridY
-        y = finElemY(k, 1);
-        BL2(k) = sum(Phi_rDer(y, integ_tVec, epsilon));
-        BL4(k) = -sum(Phi_rDer(yRange(2) - y, integ_tVec, epsilon));
+    % BLE: theta 2
+    RHS_FEM_theta2 = zeros(numBLE_X, 1);
+    PsiVec = PsiFcn(meshY_1D, t, epsilon);
+    for thetaNo = 1:numBLE_X
+        RHS_FEM_theta2(thetaNo) = sum(PsiVec .* forcing_FEM(:,thetaNo)) .* prismVol;
     end
     
-    
-    
-    
-    
-    source_FEM = f_vec - (soln - solnPrev) ./ Dt;
-    RHS_FEM = (2 * cellArea / epsilon) * source_FEM;
-    soln = stiffMat \ RHS_FEM;
+    RHS_FEM = [RHS_FEM_reg; RHS_FEM_theta1; RHS_FEM_theta2];
+    soln_FEM = stiffMat \ RHS_FEM;
     
     
     
@@ -149,7 +168,15 @@ for stepNo = 1:numTimeStep
     
     
     
+    
+    
+    
+    
+    
+    % ----- ----- ----- ----- ----- ----- 
     % Generate graphs
+    % ----- ----- ----- ----- ----- -----
+    
     if ~mod(stepNo, graphPeriod)
         if ~makeMovie
             figure;

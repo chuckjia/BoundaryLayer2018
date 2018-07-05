@@ -228,7 +228,7 @@ clear; clc
 t = 1;
 epsilon = 1e-5;
 xRange = [0, 1];
-meshSize = 150;
+meshSize = 50;
 
 stepSize = (xRange(2) - xRange(1)) / meshSize;
 meshX = xRange(1):stepSize:xRange(2);
@@ -276,7 +276,13 @@ plot(1:0.5:2, 1:0.5:2)
 meshX = meshgrid(1:0.2:2, 1:0.2:2)
 
 
+%% 
 
+function val = myfun(x, t, epsilon)
+epsSqrt = epsilon^0.5;
+val = t .* (1 - exp(-x ./ epsSqrt) .* cos(x ./ epsSqrt)) .* ...
+    (1 - exp(-(1 - x) ./ epsSqrt) .* cos((1 - x) ./ epsSqrt));
+end
 
 
 

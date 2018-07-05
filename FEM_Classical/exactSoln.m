@@ -6,6 +6,7 @@ function val = exactSoln(x, y, t, epsilon)
 % ===== ===== ===== ===== ===== ===== 
 
 val = 0 .* x;
+% val = (1-x).^2 .* (1-y).^2;
 
 % ===== ===== ===== ===== ===== ===== 
 % Test #2: Youngjoon's Example

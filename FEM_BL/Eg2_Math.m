@@ -11,6 +11,6 @@ clear; clc
 %% An example of the smooth cut-off function
 
 xVec = 0:0.01:1;
-plot(xVec, cutOffFcn(xVec));
+plot(xVec, PsiFcn(xVec, 1, 1e-4));
 
 

@@ -9,7 +9,7 @@ graphPeriod = -1;
 makeMovie = false;
 zRangeInPlot = false;
 saveImgToFile = true;
-graphBoundary = false;
+graphBoundary = true;
 
 % Setting parameters
 xRange = [0, 1];

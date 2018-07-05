@@ -28,9 +28,9 @@ for j = 1:numElemX
         x = xRange(1) + Dx * i;
         y = yRange(1) + Dy * j;
         
-        % ----- ----- ----- ----- ----- ----- ----- 
-        % Boundary layer element: theta 1 MIDDLE
-        % ----- ----- ----- ----- ----- ----- ----- 
+        % ----- ----- ----- ----- ----- ----- -----
+        % BL: theta 1 MIDDLE
+        % ----- ----- ----- ----- ----- ----- -----
         
         thetaNo = i;
         theta = 0;
@@ -38,32 +38,32 @@ for j = 1:numElemX
         % Area #1
         xCenter = x - (2/3) * Dx;
         % yCenter = y + (1/3) * Dy;
-        theta = theta + (1/Dx) * Phi_rDer(xCenter, t, epsilon) * volPyramid1;
+        theta = theta + (1/Dx) * Psi_rDer(xCenter, t, epsilon) * volPyramid1;
         
         % Area #2
         xCenter = x - (1/3) * Dx;
         % yCenter = y - (1/3) * Dy;
-        theta = theta + (1/Dx) * Phi_rDer(xCenter, t, epsilon) * volPyramid1 + (1/Dy) * PhiFcn(xCenter) * areaTriangle;
+        theta = theta + (1/Dx) * Psi_rDer(xCenter, t, epsilon) * volPyramid1 + (1/Dy) * PsiFcn(xCenter) * areaTriangle;
         
         % Area #3
         xCenter = x + (1/3) * Dx;
         % yCenter = y - (2/3) * Dy;
-        theta = theta + (1/Dy) * PhiFcn(xCenter) * areaTriangle;
+        theta = theta + (1/Dy) * PsiFcn(xCenter) * areaTriangle;
         
         % Area #4
         xCenter = x + (2/3) * Dx;
         % yCenter = y - (1/3) * Dy;
-        theta = theta - (1/Dx) * Phi_rDer(xCenter, t, epsilon) * volPyramid1;
+        theta = theta - (1/Dx) * Psi_rDer(xCenter, t, epsilon) * volPyramid1;
         
         % Area #5
         xCenter = x + (1/3) * Dx;
         % yCenter = y + (1/3) * Dy;
-        theta = theta - (1/Dx) * Phi_rDer(xCenter, t, epsilon) * volPyramid1 + (1/Dy) * PhiFcn(xCenter) * areaTriangle;
+        theta = theta - (1/Dx) * Psi_rDer(xCenter, t, epsilon) * volPyramid1 + (1/Dy) * PsiFcn(xCenter) * areaTriangle;
         
         % Area #6
         xCenter = x - (1/3) * Dx;
         % yCenter = y + (2/3) * Dy;
-        theta = theta + (1/Dy) * PhiFcn(xCenter) * areaTriangle;
+        theta = theta + (1/Dy) * PsiFcn(xCenter) * areaTriangle;
         
         % Store in vector
         entryNo = entryNo + 1;
@@ -76,96 +76,100 @@ for j = 1:numElemX
         colIndexVec_theta(entryNo) = thetaNo;
         nonZeroElemVec_theta(entryNo) = theta;
         
-        % ----- ----- ----- ----- ----- ----- ----- 
-        % Boundary layer element: theta 1 LOWER
-        % ----- ----- ----- ----- ----- ----- ----- 
+        % ----- ----- ----- ----- ----- ----- -----
+        % BL: theta 1 LOWER
+        % ----- ----- ----- ----- ----- ----- -----
         
-        thetaNo = i - 1;
-        theta = 0;
+        if i > 1
+            thetaNo = i - 1;
+            theta = 0;
+            
+            % Area #2
+            xCenter = x - (1/3) * Dx;
+            theta = theta + (1/Dx) * Psi_rDer(xCenter, t, epsilon) * volPyramid2 - (1/Dy) * PsiFcn(xCenter) * areaTriangle;
+            
+            % Area #3
+            xCenter = x + (1/3) * Dx;
+            theta = theta - (1/Dy) * PsiFcn(xCenter) * areaTriangle;
+            
+            % Area #4
+            xCenter = x + (2/3) * Dx;
+            theta = theta - (1/Dx) * Psi_rDer(xCenter, t, epsilon) * volPyramid2;
+            
+            % Store in vector
+            entryNo = entryNo + 1;
+            rowIndexVec_theta(entryNo) = thetaNo;
+            colIndexVec_theta(entryNo) = regElemNo;
+            nonZeroElemVec_theta(entryNo) = theta;
+            
+            entryNo = entryNo + 1;
+            rowIndexVec_theta(entryNo) = regElemNo;
+            colIndexVec_theta(entryNo) = thetaNo;
+            nonZeroElemVec_theta(entryNo) = theta;
+        end
         
-        % Area #2
-        xCenter = x - (1/3) * Dx;
-        theta = theta + (1/Dx) * Phi_rDer(xCenter, t, epsilon) * volPyramid2 - (1/Dy) * PhiFcn(xCenter) * areaTriangle;
+        % ----- ----- ----- ----- ----- ----- -----
+        % BL: theta 1 UPPER
+        % ----- ----- ----- ----- ----- ----- -----
         
-        % Area #3
-        xCenter = x + (1/3) * Dx;
-        theta = theta - (1/Dy) * PhiFcn(xCenter) * areaTriangle;
+        if i < numElemY
+            thetaNo = i + 1;
+            theta = 0;
+            
+            % Area #1
+            xCenter = x - (2/3) * Dx;
+            theta = theta + (1/Dx) * Psi_rDer(xCenter, t, epsilon) * volPyramid2;
+            
+            % Area #6
+            xCenter = x - (1/3) * Dx;
+            theta = theta - (1/Dy) * PsiFcn(xCenter) * areaTriangle;
+            
+            % Area #5
+            xCenter = x + (1/3) * Dx;
+            theta = theta - (1/Dx) * Psi_rDer(xCenter, t, epsilon) * volPyramid2 - (1/Dy) * PsiFcn(xCenter) * areaTriangle;
+            
+            % Store in vector
+            entryNo = entryNo + 1;
+            rowIndexVec_theta(entryNo) = thetaNo;
+            colIndexVec_theta(entryNo) = regElemNo;
+            nonZeroElemVec_theta(entryNo) = theta;
+            
+            entryNo = entryNo + 1;
+            rowIndexVec_theta(entryNo) = regElemNo;
+            colIndexVec_theta(entryNo) = thetaNo;
+            nonZeroElemVec_theta(entryNo) = theta;
+        end
         
-        % Area #4
-        xCenter = x + (2/3) * Dx;
-        theta = theta - (1/Dx) * Phi_rDer(xCenter, t, epsilon) * volPyramid2;
-        
-        % Store in vector
-        entryNo = entryNo + 1;
-        rowIndexVec_theta(entryNo) = thetaNo;
-        colIndexVec_theta(entryNo) = regElemNo;
-        nonZeroElemVec_theta(entryNo) = theta;
-        
-        entryNo = entryNo + 1;
-        rowIndexVec_theta(entryNo) = regElemNo;
-        colIndexVec_theta(entryNo) = thetaNo;
-        nonZeroElemVec_theta(entryNo) = theta;
-        
-        % ----- ----- ----- ----- ----- ----- ----- 
-        % Boundary layer element: theta 1 UPPER
-        % ----- ----- ----- ----- ----- ----- ----- 
-        
-        thetaNo = i + 1;
-        theta = 0;
-        
-        % Area #1
-        xCenter = x - (2/3) * Dx;
-        theta = theta + (1/Dx) * Phi_rDer(xCenter, t, epsilon) * volPyramid2;
-        
-        % Area #6
-        xCenter = x - (1/3) * Dx;
-        theta = theta - (1/Dy) * PhiFcn(xCenter) * areaTriangle;
-        
-        % Area #5
-        xCenter = x + (1/3) * Dx;
-        theta = theta - (1/Dx) * Phi_rDer(xCenter, t, epsilon) * volPyramid2 - (1/Dy) * PhiFcn(xCenter) * areaTriangle;
-        
-        % Store in vector
-        entryNo = entryNo + 1;
-        rowIndexVec_theta(entryNo) = thetaNo;
-        colIndexVec_theta(entryNo) = regElemNo;
-        nonZeroElemVec_theta(entryNo) = theta;
-        
-        entryNo = entryNo + 1;
-        rowIndexVec_theta(entryNo) = regElemNo;
-        colIndexVec_theta(entryNo) = thetaNo;
-        nonZeroElemVec_theta(entryNo) = theta;
-        
-        % ----- ----- ----- ----- ----- ----- ----- 
-        % Boundary layer element: theta 2 MIDDLE
-        % ----- ----- ----- ----- ----- ----- ----- 
+        % ----- ----- ----- ----- ----- ----- -----
+        % BL: theta 2 MIDDLE
+        % ----- ----- ----- ----- ----- ----- -----
         
         thetaNo = numElemY + j;
         theta = 0;
         
         % Area #1
         yCenter = y + (1/3) * Dy;
-        theta = theta + (1/Dx) * PhiFcn(yCenter, t, epsilon) * areaTriangle;
+        theta = theta + (1/Dx) * PsiFcn(yCenter, t, epsilon) * areaTriangle;
         
         % Area #2
         yCenter = y - (1/3) * Dy;
-        theta = theta + (1/Dx) * PhiFcn(yCenter, t, epsilon) * areaTriangle + (1/Dy) * Phi_rDer(yCenter, t, epsilon) * volPyramid1;
+        theta = theta + (1/Dx) * PsiFcn(yCenter, t, epsilon) * areaTriangle + (1/Dy) * Psi_rDer(yCenter, t, epsilon) * volPyramid1;
         
         % Area #3
         yCenter = y - (2/3) * Dy;
-        theta = theta + (1/Dy) * Phi_rDer(yCenter, t, epsilon) * volPyramid1;
+        theta = theta + (1/Dy) * Psi_rDer(yCenter, t, epsilon) * volPyramid1;
         
         % Area #4
         yCenter = y - (1/3) * Dy;
-        theta = theta + (1/Dx) * PhiFcn(yCenter, t, epsilon) * areaTriangle;  % (-1) in the area, sign flipped
+        theta = theta + (1/Dx) * PsiFcn(yCenter, t, epsilon) * areaTriangle;  % (-1) in the area, sign flipped
         
         % Area #5
         yCenter = y + (1/3) * Dy;
-        theta = theta + (1/Dx) * PhiFcn(yCenter, t, epsilon) * areaTriangle - (1/Dy) * Phi_rDer(yCenter) * volPyramid1;
+        theta = theta + (1/Dx) * PsiFcn(yCenter, t, epsilon) * areaTriangle - (1/Dy) * Psi_rDer(yCenter) * volPyramid1;
         
         % Area #6
         yCenter = y + (2/3) * Dy;
-        theta = theta - (1/Dy) * Phi_rDer(yCenter) * volPyramid1;
+        theta = theta - (1/Dy) * Psi_rDer(yCenter) * volPyramid1;
         
         % Store in vector
         entryNo = entryNo + 1;
@@ -177,6 +181,70 @@ for j = 1:numElemX
         rowIndexVec_theta(entryNo) = regElemNo;
         colIndexVec_theta(entryNo) = thetaNo;
         nonZeroElemVec_theta(entryNo) = theta;
+        
+        % ----- ----- ----- ----- ----- ----- -----
+        % BL: theta 2 LEFT
+        % ----- ----- ----- ----- ----- ----- -----
+        
+        if j > 1
+            thetaNo = numElemY + j - 1;
+            theta = 0;
+            
+            % Area #6
+            yCenter = y + (2/3) * Dy;
+            theta = theta - (1/Dy) * Psi_rDer(yCenter, t, epsilon) * volPyramid2;
+            
+            % Area #1
+            yCenter = y + (1/3) * Dy;
+            theta = theta - (1/Dx) * PsiFcn(yCenter, t, epsilon) * areaTriangle;
+            
+            % Area #2
+            yCenter = y - (1/3) * Dy;
+            theta = theta - (1/Dx) * PsiFcn(yCenter, t, epsilon) * areaTriangle + (1/Dy) * Psi_rDer(yCenter, t, epsilon) * volPyramid2;
+            
+            % Store in vector
+            entryNo = entryNo + 1;
+            rowIndexVec_theta(entryNo) = thetaNo;
+            colIndexVec_theta(entryNo) = regElemNo;
+            nonZeroElemVec_theta(entryNo) = theta;
+            
+            entryNo = entryNo + 1;
+            rowIndexVec_theta(entryNo) = regElemNo;
+            colIndexVec_theta(entryNo) = thetaNo;
+            nonZeroElemVec_theta(entryNo) = theta;
+        end
+        
+        % ----- ----- ----- ----- ----- ----- -----
+        % BL: theta 2 RIGHT
+        % ----- ----- ----- ----- ----- ----- -----
+        
+        if j < numElemX
+            thetaNo = numElemY + j + 1;
+            theta = 0;
+            
+            % Area #3
+            yCenter = y - (2/3) * Dy;
+            theta = theta + (1/Dy) * Psi_rDer(yCenter, t, epsilon) * volPyramid2;
+            
+            % Area #4
+            yCenter = y - (1/3) * Dy;
+            theta = theta - (1/Dx) * PsiFcn(yCenter, t, epsilon) * areaTriangle;  % (-1) in the area, sign flipped
+            
+            % Area #5
+            yCenter = y + (1/3) * Dy;
+            theta = theta - (1/Dx) * PsiFcn(yCenter, t, epsilon) * areaTriangle - (1/Dy) * Psi_rDer(yCenter) * volPyramid2;
+            
+            % Store in vector
+            entryNo = entryNo + 1;
+            rowIndexVec_theta(entryNo) = thetaNo;
+            colIndexVec_theta(entryNo) = regElemNo;
+            nonZeroElemVec_theta(entryNo) = theta;
+            
+            entryNo = entryNo + 1;
+            rowIndexVec_theta(entryNo) = regElemNo;
+            colIndexVec_theta(entryNo) = thetaNo;
+            nonZeroElemVec_theta(entryNo) = theta;
+        end
         
     end
 end
