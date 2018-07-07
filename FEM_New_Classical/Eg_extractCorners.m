@@ -5,13 +5,13 @@
 % Description of first code block
 clear; closeAllImages(); clc
 
-epsilon = 1e-4;
+epsilon = 1e-2;
 progPeriod = 5;
 
 includeEndPts = true;
 
 % Coarse mesh
-meshN_vec = [2^5, 2^9];
+meshN_vec = [50, 100];
 solveAndgraphSlices(epsilon, meshN_vec, progPeriod, includeEndPts)
 
 
@@ -20,20 +20,20 @@ solveAndgraphSlices(epsilon, meshN_vec, progPeriod, includeEndPts)
 
 clear; closeAllImages(); clc
 
-epsilon = 1e-5;
+epsilon = 1e-2;
 progPeriod = 10;
 finalTime = 1;
 
 includeEndPts = true;
 performEval = false;
 
-meshN = 2^7;
+meshN = 49;
 level = 1 / meshN;
 soln_coarse = solveWrap(epsilon, meshN, progPeriod, performEval);
 gridpts = 0:(1/meshN):1;
 gridpts_fine = 0:(1/1024):1;
 
-portion = 1/8;
+portion = 1;
 portionVec_coarse = 1:floor(length(gridpts) * portion);
 portionVec_fine = 1:floor(length(gridpts_fine) * portion);
 
@@ -72,6 +72,31 @@ plot(gridpts_fine(portionVec_fine), soln_exact(portionVec_fine), ".-");
 title({direction, ""});
 legend('Coarse Mesh', 'True Solution');
 hold off
+
+%% Simple plot of x- and y- slices
+
+clear; closeAllImages(); clc
+
+epsilon = 1e-6;
+meshN = 2048;
+progPeriod = 10;
+performEval = false;
+
+% profile on
+soln = solveWrap(epsilon, meshN, progPeriod, performEval);
+
+% p = profile('info');
+% profCurr = p.FunctionTable;
+
+% graphEndPts = true;
+% % Numerical solution slices
+% sliceAtX = true;
+% level = (1/50) * 1;
+% graphSolnSlice(soln, sliceAtX, level, graphEndPts);
+% 
+% sliceAtX = false;
+% level = (1/50) * 1;
+% graphSolnSlice(soln, sliceAtX, level, graphEndPts);
 
 
 %%

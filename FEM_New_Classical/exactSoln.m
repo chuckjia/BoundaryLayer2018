@@ -8,7 +8,7 @@ function val = exactSoln(x, y, t, epsilon)
 val = 0 .* x;
 
 % ===== ===== ===== ===== ===== ===== 
-% Test #2: Youngjoon's Example
+% Test #3: Youngjoon's Example
 % ===== ===== ===== ===== ===== ===== 
 
 % val = t .* (1 - exp(-x ./ epsilon.^0.5) .* cos(x ./ epsilon.^0.5)) .* (1 - exp(-(1 - x) ./ epsilon.^0.5) .* cos((1 - x) ./ epsilon.^0.5)) .* (1 - exp(-y ./ epsilon.^0.5) .* cos(y ./ epsilon.^0.5)) .* (1 - exp(-(1 - y) ./ epsilon.^0.5) .* cos((1 - y) ./ epsilon.^0.5));

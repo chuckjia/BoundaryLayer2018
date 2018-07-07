@@ -1,25 +1,16 @@
 clear; closeAllImages(); clc
 
-epsilon = 1e-2;
-meshN = 128;
-progPeriod = 10;
-performEval = false;
+epsilon = 1e-6;
+meshN = 2^11;
+progPeriod = 1;
+performEval = true;
 
 % profile on
 soln = solveWrap(epsilon, meshN, progPeriod, performEval);
 
-% p = profile('info');
-% profCurr = p.FunctionTable;
-
-graphEndPts = true;
-% Numerical solution slices
-sliceAtX = true;
-level = (1/50) * 1;
-graphSolnSlice(soln, sliceAtX, level, graphEndPts);
-
-sliceAtX = false;
-level = (1/50) * 1;
-graphSolnSlice(soln, sliceAtX, level, graphEndPts);
+% Save numerical solution in file
+solnFilename = "mesh2048.mat";
+save("Output/" + solnFilename, "soln")
 
 
 
