@@ -3,12 +3,12 @@ function val = fFcn(x, y, t, epsilon)
 
 % val = ones(size(x)) .* exp(t);
 
-m = 4 .* pi; 
-val = sin(m .* t .* x) .* (0.5 + x).^2 .* (0.5 + y).^2 + 1;
+% m = 4 .* pi; 
+% val = sin(m .* t .* x) .* (0.5 + x).^2 .* (0.5 + y).^2 + 1;
 % val = val .* cutOffFcn(x) .* cutOffFcn(y);
 
-% m = 4 .* pi; n = 2 .* pi;
-% val = sin(m .* t + n .* x).* (0.5 + x).^2 .* (0.5 + y).^2 + 1;
+m = 4 .* pi; n = 2 .* pi;
+val = sin(m .* t + n .* x).* (0.5 + x).^2 .* (0.5 + y).^2 + 1;
 
 % val = sin(pi * y);
 

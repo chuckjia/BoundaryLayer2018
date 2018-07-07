@@ -11,15 +11,15 @@ soln = solveWrap(epsilon, meshN, progPeriod, performEval);
 % p = profile('info');
 % profCurr = p.FunctionTable;
 
-% graphEndPts = true;
-% % Numerical solution slices
-% sliceAtX = true;
-% level = 1e-9;
-% graphSolnSlice(soln, sliceAtX, level, graphEndPts);
-% 
-% sliceAtX = false;
-% level = 1e-9;
-% graphSolnSlice(soln, sliceAtX, level, graphEndPts);
+graphEndPts = true;
+% Numerical solution slices
+sliceAtX = true;
+level = (1/50) * 1;
+graphSolnSlice(soln, sliceAtX, level, graphEndPts);
+
+sliceAtX = false;
+level = (1/50) * 1;
+graphSolnSlice(soln, sliceAtX, level, graphEndPts);
 
 
 
