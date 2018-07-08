@@ -3,7 +3,7 @@ function val = fFcn(x, y, t, epsilon)
 
 % val = ones(size(x)) .* exp(t);
 
-val = sin(pi * y);
+% val = sin(pi * y);
 
 % ===== ===== ===== ===== ===== ===== 
 % Test #1
@@ -17,8 +17,8 @@ val = sin(pi * y);
 % Test #2
 % ===== ===== ===== ===== ===== =====
 
-% m = 4 .* pi; n = 2 .* pi;
-% val = sin(m .* t + n .* x).* (0.5 + x).^2 .* (0.5 + y).^2 + 1;
+m = 4 .* pi; n = 2 .* pi;
+val = sin(m .* t + n .* x).* (0.5 + x).^2 .* (0.5 + y).^2 + 1;
 
 % ===== ===== ===== ===== ===== ===== 
 % Test #3: Youngjoon's example
