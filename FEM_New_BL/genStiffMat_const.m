@@ -1,4 +1,4 @@
-function stiffMat = genStiffMat(xRange, yRange, meshSize, Dt, epsilon)
+function [rowIndexVec, colIndexVec, nonZeroElemVec] = genStiffMat_const(xRange, yRange, meshSize, Dt, epsilon)
 %GENSTIFFMAT Generate stiff matrix for the 2D Poisson problem with Dirichlet 0 BC using uniform mesh
 %   This function generates a stiff matrix that does NOT include the boundary elements
 %   Inputs::  meshSize: Size of the mesh, i.e. (# of cells along x-direction) x (# of cells along y-direction)
@@ -90,8 +90,6 @@ for i = 1:numGridsX
 end
 
 % fprintf("Number of entries actually used = %d.\nNumber of entries estimated = %d\n", entryNo, numNonZeroElemStiffMat);  % Sanity checks
-
-stiffMat = sparse(rowIndexVec, colIndexVec, nonZeroElemVec);
 
 end
 
