@@ -22,7 +22,7 @@ numTimeStep = 100;
 
 % Solve the heat equation
 tic
-[soln, Mv] = solveHeatEq(xRange, yRange, meshSize, epsilon, Dt, numTimeStep, graphPeriod, makeMovie, ...
+[soln, Mv] = solveHeatEq_BL(xRange, yRange, meshSize, epsilon, Dt, numTimeStep, graphPeriod, makeMovie, ...
     zRangeInPlot, progPeriod, saveImgToFile, graphBoundary);
 toc
 

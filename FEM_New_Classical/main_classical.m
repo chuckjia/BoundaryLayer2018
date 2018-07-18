@@ -1,9 +1,9 @@
 clear; closeAllImages(); clc
 
 epsilon = 1e-2;
-meshN = 2^6;
+meshN = 49;
 progPeriod = 10;
-performEval = true;
+performEval = false;
 
 % profile on
 soln = solveWrap(epsilon, meshN, progPeriod, performEval);

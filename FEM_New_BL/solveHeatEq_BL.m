@@ -67,7 +67,7 @@ toc
 % FEM matrices
 tic
 cellArea = calcCellArea(xRange, yRange, meshSize);
-stiffMat = genStiffMat(xRange, yRange, meshSize, Dt, epsilon);
+[rowIndexVec, colIndexVec, nonZeroElemVec] = genStiffMat_const(xRange, yRange, meshSize, Dt, epsilon);
 fprintf("- Initiation of stiff matrix completed.\n");
 toc
 
@@ -87,8 +87,10 @@ for stepNo = 1:numTimeStep
     f_vec = reshape(fFcn(finElemX, finElemY, t, epsilon), [], 1);
     
     % FEM
-    RHS_FEM = (2 * cellArea) * (Dt .* f_vec + soln);  % Perform numerical integration
+    stiffMat = genStiffMat_BL(xRange, yRange, meshSize, Dt, t, epsilon, rowIndexVec, colIndexVec, nonZeroElemVec);
+    RHS_FEM = calcRHS_FEM(xRange, yRange, meshSize, Dt, t, epsilon, f_vec, soln);  % Perform numerical integration
     soln = stiffMat \ RHS_FEM;
+    soln = convSolnToRegMesh(soln, xRange, yRange, meshSize, t, epsilon);
     
     % Generate graphs
     if ~mod(stepNo, graphPeriod)
