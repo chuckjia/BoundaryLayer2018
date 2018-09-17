@@ -18,7 +18,7 @@ yRange = [0, 1];
 meshSize = [meshN, meshN];  % [numCellsX, numCellsY]
 
 Dt = 0.01;
-numTimeStep = 10;
+numTimeStep = 100;
 
 % Solve the heat equation
 tic

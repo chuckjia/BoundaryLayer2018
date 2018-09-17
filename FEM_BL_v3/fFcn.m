@@ -6,7 +6,7 @@ function val = fFcn(x, y, t, epsilon)
 
 m = 4 .* pi; 
 val = sin(m .* t .* x) .* (0.5 + x).^2 .* (0.5 + y).^2 + 1;
-val = val .* cutOffFcn(x) .* cutOffFcn(y);
+val = val .* cutOffFcn(x) .* cutOffFcn(y) .* cutOffFcn2(x) .* cutOffFcn2(y);
 
 
 % ===== =====  Test #2  ===== ===== %
